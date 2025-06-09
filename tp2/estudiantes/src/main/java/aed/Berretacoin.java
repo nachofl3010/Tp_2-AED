@@ -14,7 +14,7 @@ public class Berretacoin {
 
         this.usuarios = new HeapMax<Usuario>(n_usuarios);
         this.handles = new ArrayList<Handle<Usuario>>(n_usuarios);
-        for (int i = 0; i < n_usuarios; i++){
+        for (int i = 1; i <= n_usuarios; i++){
             Usuario usuario = new Usuario (i,0);
             Handle<Usuario> handle = usuarios.agregarElemento(usuario);
             handles.add(handle);
@@ -29,12 +29,16 @@ public class Berretacoin {
     public void agregarBloque(Transaccion[] transacciones){ // O(n_b * log(P))
 
         for (Transaccion t : transacciones){
-            Handle<Usuario> handleComprador = handles.get(t.id_comprador());
-            Usuario comprador = handleComprador.getElemento();
-            comprador.saldo -= t.monto();
-            usuarios.actualizar(handleComprador);
 
-            Handle<Usuario> handleVendedor = handles.get(t.id_vendedor());
+            if(t.id_comprador()!= 0){
+            
+                Handle<Usuario> handleComprador = handles.get(t.id_comprador()-1);
+                Usuario comprador = handleComprador.getElemento();
+                comprador.saldo -= t.monto();
+                usuarios.actualizar(handleComprador);
+            }
+
+            Handle<Usuario> handleVendedor = handles.get(t.id_vendedor()-1);
             Usuario vendedor = handleVendedor.getElemento();
             vendedor.saldo += t.monto();
             usuarios.actualizar(handleVendedor);
@@ -49,6 +53,8 @@ public class Berretacoin {
         // O(n_b * log(n_b)) : para cada transaccion agregamos a un heap de tamaño a lo sumo n_b. El resto son O(1).
 
     }
+
+
     public Transaccion txMayorValorUltimoBloque() {
         Bloque ult = bloques.obtener(bloques.longitud() - 1);
         return ult.obtenerMaximaTransaccion();
@@ -72,16 +78,14 @@ public class Berretacoin {
 
     public int montoMedioUltimoBloque() {
         Bloque ultimo = bloques.obtener(bloques.longitud() - 1);
-        int suma = ultimo.getSumaMontos();
-        int cant = ultimo.numeroTransacciones();
-        return suma/cant;
+        return ultimo.promedioMontos();
     }
 
     public void hackearTx(){ // O(log n_b + log(p))
         // O(log n_b) obtenerMaximo de heapMax
         // O(log p) buscar id_vendedor y id_comprador y actualizar saldo y reordenar heapMax
         Bloque ult = bloques.obtener(bloques.longitud() - 1);
-        Transaccion t = ult.obtenerMaximaTransaccion();
+        Transaccion t = ult.extraerMaximaTransaccion();
 
         // Revertir pago
         Handle<Usuario> hV = handles.get(t.id_vendedor());

@@ -18,9 +18,21 @@ public class Transaccion implements Comparable<Transaccion> {
         if (this.monto != otro.monto) {
             return Integer.compare(otro.monto, this.monto); // mayor monto primero
         } else {
-            return Integer.compare(this.id, otro.id); // menor id primero
+            return Integer.compare(otro.id, this.id); // menor id primero
         }
     }
+
+
+    @Override
+    public String toString() {
+        return "Transaccion[id=" + id + 
+               ", comprador=" + id_comprador + 
+               ", vendedor=" + id_vendedor + 
+               ", monto=" + monto + "]";
+    }
+
+
+
 
     @Override
     public boolean equals(Object otro){
