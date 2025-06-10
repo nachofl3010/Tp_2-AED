@@ -50,6 +50,23 @@ public class HeapMax<T extends Comparable<T>> {
         return maximo;
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < size; i++) {
+            sb.append(heap[i].getElemento().toString()); // Usamos toString() de los elementos del heap
+            if (i < size - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+
+
     public void actualizar(Handle<T> h) { // O(log n)
         siftUp(h.getPosicion());
         siftDown(h.getPosicion());

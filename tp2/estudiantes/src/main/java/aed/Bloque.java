@@ -18,6 +18,7 @@ public class Bloque {
         if (t.id_vendedor() != 0) { // no hay que tener en cuenta las de creación
             sumaMontos += t.monto(); // O(1), solo si no es creación
         }
+        System.out.println("Estado del heap después de agregar: " + heap);
     }
 
     public Transaccion obtenerMaximaTransaccion() { // no sé si se usa
@@ -38,14 +39,19 @@ public class Bloque {
         return sumaMontos;
     }
 
-    public int promedioMontos() { // para usar en montoMedioUltimoBloque
-        int n = transacciones.longitud() - 1;
+    public int promedioMontos() {
+        int n = 0;
+        for (int i = 0; i < transacciones.longitud(); i++) {
+            if (transacciones.obtener(i).id_comprador() != 0) {
+                n++;
+            }
+        }
         if (n > 0) {
             return sumaMontos / n;
         } else {
             return 0;
+        }
     }
-}
 
     public int numeroTransacciones() {
         return transacciones.longitud();
